@@ -28,13 +28,15 @@ function onOperatorClicked(e) {
         equalBtn.dispatchEvent(new MouseEvent('click'));
     }
     
+    justCalculated = false;
     operator = e.target.textContent;
     updateDisplayText();
 }
 
 function onEraseClicked(e) {
-    if (!operand1) {
+    if (!operand1 || justCalculated) {
         setCleanState();
+        updateDisplayText();
         return;
     }
     
@@ -54,8 +56,8 @@ function onEqualClicked() {
         return;
     }
     const result = operate(operator, operand1, operand2);
-    justCalculated = true;
     setCleanState();
+    justCalculated = true;
     if (result === null) {
         displayPara.textContent = "ERROR";
         return;
@@ -105,6 +107,7 @@ function processClickLogic(digit) {
 }
 
 function setCleanState(){
+    justCalculated = false;
     operand1 = '';
     operand2 = '';
     operator = '';
