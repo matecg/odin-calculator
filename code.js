@@ -9,18 +9,66 @@ let operand1 = '', operand2 = '', operator = '';
 digitBtns.forEach((btn) => btn.addEventListener('click', onDigitClicked));
 operatorBtns.forEach((btn) => btn.addEventListener('click', onOperatorClicked));
 clearBtn.addEventListener('click', onClearClicked);
-equalBtn.addEventListener('click', () => {
+equalBtn.addEventListener('click', onEqualClicked);
+eraseBtn.addEventListener('click', onEraseClicked);
+
+setCleanState();
+updateDisplayText();
+
+function onDigitClicked(e) {
+    const digit = e.target.textContent;
+    if (!operand1 && digit === '0') return;
+    if (!operand1 || !operator) {
+        operand1 += digit;
+        displayPara.textContent = operand1;
+        return;
+    }
+    operand2 += digit;
+    displayPara.textContent += digit;
+}
+
+function onOperatorClicked(e) {
+    if (!operand1) return;
+    if (operand2) {
+        equalBtn.dispatchEvent(new MouseEvent('click'));
+    }
+    
+    operator = e.target.textContent;
+    updateDisplayText();
+}
+
+function onEraseClicked(e) {
+    if (!operand1) {
+        setCleanState();
+        return;
+    }
+    
+    if (operand2) {
+        operand2 = removeLast(operand2);
+    } else if (operator) {
+        operator = '';
+    } else {
+        operand1 = removeLast(operand1);
+    }
+    updateDisplayText();
+}
+
+function onEqualClicked() {
     if (!operand1 || !operand2 || !operator) {
         setCleanState();
         return;
     }
-    const result = operate(operator, operand1, operand2);
+    const result = operate(operator, operand1, operand2).toString();
     setCleanState();
-    displayPara.textContent = result.toString();
-});
-eraseBtn.addEventListener('click', onEraseClicked);
+    displayPara.textContent = result;
+    operand1 = result;
+    updateDisplayText();
+}
 
-setCleanState();
+function onClearClicked() {
+    setCleanState();
+    updateDisplayText();
+}
 
 function operate(operator, operand1, operand2) {
     switch (operator) {
@@ -42,58 +90,27 @@ function operate(operator, operand1, operand2) {
     }
 }
 
-function onDigitClicked(e) {
-    const digit = e.target.textContent;
-    if (!operand1 && digit === '0') return;
-    if (!operand1 || !operator) {
-        operand1 += digit;
-        displayPara.textContent = operand1;
-        return;
-    }
-    operand2 += digit;
-    displayPara.textContent += digit;
-}
-
-function onOperatorClicked(e) {
-    if (!operand1 || operand2) return; // Maybe call operate if operand2 exists.
-
-    const op = e.target.textContent;
-    if (operator) {
-        displayPara.textContent = removeLast(displayPara.textContent);
-    }
-    operator = op;
-    displayPara.textContent += op;
-}
-
 function setCleanState(){
-    displayPara.textContent = '0';
     operand1 = '';
     operand2 = '';
     operator = '';
-}
-
-function onClearClicked() {
-    setCleanState();
-}
-
-function onEraseClicked(e) {
-    if (!operand1) {
-        setCleanState();
-        return;
-    }
-    
-    displayPara.textContent = removeLast(displayPara.textContent);
-    if (operand2) {
-        operand2 = removeLast(operand2);
-    } else if (operator) {
-        operator = '';
-    } else {
-        operand1 = removeLast(operand1);
-    }
 }
 
 function removeLast(string) {
     const current = string.split('');
     current.pop();
     return current.join('');
+}
+
+function updateDisplayText() {
+    displayPara.textContent = '';
+    if (!operand1) {
+        displayPara.textContent = '0';
+        return;
+    }
+    displayPara.textContent += operand1;
+    if (!operator) return;
+    displayPara.textContent += operator;
+    if (!operand2) return;
+    displayPara.textContent +=operand2;
 }
