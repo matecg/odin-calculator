@@ -5,6 +5,7 @@ const clearBtn = document.querySelector('.clear');
 const equalBtn = document.querySelector('.equal');
 const eraseBtn = document.querySelector('.erase');
 let operand1 = '', operand2 = '', operator = '';
+let justCalculated = false;
 
 digitBtns.forEach((btn) => btn.addEventListener('click', onDigitClicked));
 operatorBtns.forEach((btn) => btn.addEventListener('click', onOperatorClicked));
@@ -17,14 +18,8 @@ updateDisplayText();
 
 function onDigitClicked(e) {
     const digit = e.target.textContent;
-    if (!operand1 && digit === '0') return;
-    if (!operand1 || !operator) {
-        operand1 += digit;
-        displayPara.textContent = operand1;
-        return;
-    }
-    operand2 += digit;
-    displayPara.textContent += digit;
+    processClickLogic(digit);
+    updateDisplayText();
 }
 
 function onOperatorClicked(e) {
@@ -58,10 +53,15 @@ function onEqualClicked() {
         setCleanState();
         return;
     }
-    const result = operate(operator, operand1, operand2).toString();
+    const result = operate(operator, operand1, operand2);
+    justCalculated = true;
     setCleanState();
-    displayPara.textContent = result;
-    operand1 = result;
+    if (result === null) {
+        displayPara.textContent = "ERROR";
+        return;
+    }
+    displayPara.textContent = result.toString();
+    operand1 = result.toString();
     updateDisplayText();
 }
 
@@ -79,15 +79,29 @@ function operate(operator, operand1, operand2) {
         case '*':
             return +operand1 * +operand2;
         case '/':
-            if (operand2 === 0) {
+            if (+operand2 === 0) {
                 console.error("ERROR: can't divide by zero");
-                return;
+                return null;
             }
-            return +operand1 / +operand2;
+            return Math.round((+operand1 / +operand2) * 1000) / 1000;
         default:
             console.error("ERROR: unknown operator provided");
-            break;
+            return null;
     }
+}
+
+function processClickLogic(digit) {
+    if (justCalculated) {
+        operand1 = digit;
+        justCalculated = false;
+        return;
+    }
+    if (!operand1 && digit === '0') return;
+    if (!operand1 || !operator) {
+        operand1 += digit;
+        return;
+    }
+    operand2 += digit;
 }
 
 function setCleanState(){
@@ -97,9 +111,7 @@ function setCleanState(){
 }
 
 function removeLast(string) {
-    const current = string.split('');
-    current.pop();
-    return current.join('');
+    return string.substring(0, string.length - 1);
 }
 
 function updateDisplayText() {
