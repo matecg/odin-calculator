@@ -18,9 +18,9 @@ function operate(operator, operand1, operand2) {
     }
 }
 
-console.log(operate("+", "3", "5"));
-console.log(operate("-", "3", "5"));
-console.log(operate("*", "3", "5"));
-console.log(operate("/", "3", "5"));
-console.log(operate("+", 3, "5"));
-console.log(operate("+", 3, 5));
+console.log(operate("+", "3", "-5"));
+console.log(operate("-", "3", "-5"));
+console.log(operate("*", "3", "-5"));
+console.log(operate("/", "3", "-5"));
+console.log(operate("+", 3, "-5"));
+console.log(operate("+", 3,-5));
