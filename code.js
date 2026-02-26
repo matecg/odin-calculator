@@ -3,6 +3,7 @@ const digitBtns = document.querySelectorAll('.digit');
 const operatorBtns = document.querySelectorAll('.operator');
 const clearBtn = document.querySelector('.clear');
 const equalBtn = document.querySelector('.equal');
+const eraseBtn = document.querySelector('.erase');
 let operand1 = '', operand2 = '', operator = '';
 
 digitBtns.forEach((btn) => btn.addEventListener('click', onDigitClicked));
@@ -16,7 +17,8 @@ equalBtn.addEventListener('click', () => {
     const result = operate(operator, operand1, operand2);
     setCleanState();
     displayPara.textContent = result.toString();
-})
+});
+eraseBtn.addEventListener('click', onEraseClicked);
 
 setCleanState();
 
@@ -57,9 +59,7 @@ function onOperatorClicked(e) {
 
     const op = e.target.textContent;
     if (operator) {
-        const current = displayPara.textContent.split('');
-        current.pop();
-        displayPara.textContent = current.join('');
+        displayPara.textContent = removeLast(displayPara.textContent);
     }
     operator = op;
     displayPara.textContent += op;
@@ -74,4 +74,26 @@ function setCleanState(){
 
 function onClearClicked() {
     setCleanState();
+}
+
+function onEraseClicked(e) {
+    if (!operand1) {
+        setCleanState();
+        return;
+    }
+    
+    displayPara.textContent = removeLast(displayPara.textContent);
+    if (operand2) {
+        operand2 = removeLast(operand2);
+    } else if (operator) {
+        operator = '';
+    } else {
+        operand1 = removeLast(operand1);
+    }
+}
+
+function removeLast(string) {
+    const current = string.split('');
+    current.pop();
+    return current.join('');
 }
