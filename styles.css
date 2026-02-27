@@ -1,7 +1,10 @@
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400..900&family=VT323&display=swap');
+
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
+    font-family: "Orbitron", sans-serif;
 }
 
 body {
@@ -45,8 +48,7 @@ button {
 .clear,
 .erase,
 .digit,
-.equal,
-.dot {
+.equal {
     flex: 1;
     height: 50px;
 }
@@ -56,6 +58,28 @@ button {
     background-color: lightcoral;
     font-size: 16px;
     font-weight: 600;
+}
+
+.clear:hover,
+.erase:hover {
+    background-color: crimson;
+    color: white;
+}
+
+.operator {
+    background-color: rgb(143, 180, 248);
+}
+
+.operator:hover {
+    background-color: aqua;
+}
+
+.digit:hover {
+    background-color: lightgray;
+}
+
+.equal:hover {
+    background-color: greenyellow;
 }
 
 .equal {
@@ -68,6 +92,7 @@ button {
     color: lime;
     text-align: end;
     font-size: 30px;
+    font-weight: 700;
     margin: 5px 0;
     padding: 10px;
     border-radius: 4px;
