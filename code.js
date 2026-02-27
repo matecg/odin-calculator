@@ -4,6 +4,7 @@ const operatorBtns = document.querySelectorAll('.operator');
 const clearBtn = document.querySelector('.clear');
 const equalBtn = document.querySelector('.equal');
 const eraseBtn = document.querySelector('.erase');
+const dotBtn = document.querySelector(".dot");
 let operand1 = '', operand2 = '', operator = '';
 let justCalculated = false;
 
@@ -12,13 +13,14 @@ operatorBtns.forEach((btn) => btn.addEventListener('click', onOperatorClicked));
 clearBtn.addEventListener('click', onClearClicked);
 equalBtn.addEventListener('click', onEqualClicked);
 eraseBtn.addEventListener('click', onEraseClicked);
+dotBtn.addEventListener('click', onDotClicked);
 
 setCleanState();
 updateDisplayText();
 
 function onDigitClicked(e) {
     const digit = e.target.textContent;
-    processClickLogic(digit);
+    processOperand(digit);
     updateDisplayText();
 }
 
@@ -27,7 +29,7 @@ function onOperatorClicked(e) {
     if (operand2) {
         equalBtn.dispatchEvent(new MouseEvent('click'));
     }
-    
+
     justCalculated = false;
     operator = e.target.textContent;
     updateDisplayText();
@@ -39,7 +41,7 @@ function onEraseClicked(e) {
         updateDisplayText();
         return;
     }
-    
+
     if (operand2) {
         operand2 = removeLast(operand2);
     } else if (operator) {
@@ -72,6 +74,11 @@ function onClearClicked() {
     updateDisplayText();
 }
 
+function onDotClicked(e) {
+    processOperand(e.target.textContent);
+    updateDisplayText();
+}
+
 function operate(operator, operand1, operand2) {
     switch (operator) {
         case '+':
@@ -92,21 +99,25 @@ function operate(operator, operand1, operand2) {
     }
 }
 
-function processClickLogic(digit) {
+function processOperand(digit) {
+    const isDot = digit === '.';
     if (justCalculated) {
-        operand1 = digit;
+        operand1 = isDot ? "0." : digit;
         justCalculated = false;
         return;
     }
     if (!operand1 && digit === '0') return;
     if (!operand1 || !operator) {
-        operand1 += digit;
+        if (operand1.includes(".") && isDot) return;
+
+        operand1 += isDot && !operand1 ? "0." : digit;
         return;
     }
-    operand2 += digit;
+    if (operand2.includes(".") && isDot) return;
+    operand2 += isDot && !operand2 ? "0." : digit;
 }
 
-function setCleanState(){
+function setCleanState() {
     justCalculated = false;
     operand1 = '';
     operand2 = '';
@@ -127,5 +138,5 @@ function updateDisplayText() {
     if (!operator) return;
     displayPara.textContent += operator;
     if (!operand2) return;
-    displayPara.textContent +=operand2;
+    displayPara.textContent += operand2;
 }
