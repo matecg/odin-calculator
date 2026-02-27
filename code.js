@@ -4,7 +4,7 @@ const operatorBtns = document.querySelectorAll('.operator');
 const clearBtn = document.querySelector('.clear');
 const equalBtn = document.querySelector('.equal');
 const eraseBtn = document.querySelector('.erase');
-const dotBtn = document.querySelector(".dot");
+
 let operand1 = '', operand2 = '', operator = '';
 let justCalculated = false;
 
@@ -13,10 +13,34 @@ operatorBtns.forEach((btn) => btn.addEventListener('click', onOperatorClicked));
 clearBtn.addEventListener('click', onClearClicked);
 equalBtn.addEventListener('click', onEqualClicked);
 eraseBtn.addEventListener('click', onEraseClicked);
-dotBtn.addEventListener('click', onDotClicked);
+
 
 setCleanState();
 updateDisplayText();
+
+document.addEventListener('keydown', (e) => {
+    const digits = "1234567890.";
+    const operators = "+-*/";
+    console.log(`${e.key}`);
+    if (digits.includes(e.key)) {
+        const digitBtn = [...digitBtns]
+            .find((btn) => btn.textContent === e.key);
+        digitBtn.dispatchEvent(new MouseEvent('click'));
+        return;
+    }
+    if (operators.includes(e.key)) {
+        const opBtn = [...operatorBtns]
+            .find((btn) => btn.textContent === e.key);
+        opBtn.dispatchEvent(new MouseEvent('click'));
+        return;
+    }
+    if (e.key === "Backspace")
+        eraseBtn.dispatchEvent(new MouseEvent('click'));
+    if (e.key === "Enter" || e.key === "=")
+        equalBtn.dispatchEvent(new MouseEvent('click'));
+    if (e.key === "c")
+        clearBtn.dispatchEvent(new MouseEvent('click'));
+});
 
 function onDigitClicked(e) {
     const digit = e.target.textContent;
@@ -71,11 +95,6 @@ function onEqualClicked() {
 
 function onClearClicked() {
     setCleanState();
-    updateDisplayText();
-}
-
-function onDotClicked(e) {
-    processOperand(e.target.textContent);
     updateDisplayText();
 }
 
